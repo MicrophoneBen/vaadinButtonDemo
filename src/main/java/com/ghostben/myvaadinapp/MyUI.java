@@ -33,7 +33,11 @@ import com.vaadin.ui.Notification.Type;
 @Theme("mytheme")
 public class MyUI extends UI {
 
-    private ButtonListener buttonListener;
+	//创建一个我们自己的界面类，用来加入到UI中
+	WindowView myview = new WindowView();
+	
+	Window mainWindow = new Window("Helloworld Application");
+    private static ButtonListener buttonListener;
 
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -56,15 +60,27 @@ public class MyUI extends UI {
     		Notification.show(new Date().toLocaleString(), Type.WARNING_MESSAGE);
     	});
     	
-        //创建一个我们自己的界面类，用来加入到UI中
-        WindowView myview = new WindowView();
-        
-        Window mainWindow = new Window("Helloworld Application");
         mainWindow.setContent(myview);
         mainWindow.setSizeUndefined();
+        mainWindow.setPosition(150, 150);
+        mainWindow.setHeight("200px");
+        mainWindow.setWidth("200px");
+        mainWindow.setResizable(isReadOnly());
         Label label = new Label("Hello Vaadin user");
-
         MyUI.getCurrent().addWindow(mainWindow);
+        Button btnCloseWin = new Button("Close Window", 
+        		event->event.getButton().addClickListener(e->
+        				{
+        					MyUI.getCurrent().removeWindow(mainWindow);	
+        				}));
+        Button btnOpenWin = new Button("Open Window", 
+        		event->event.getButton().addClickListener(e->
+        		{
+        			MyUI.getCurrent().addWindow(mainWindow);	
+        		}));
+        
+        layout.addComponent(btnOpenWin);
+        layout.addComponent(btnCloseWin);
         layout.addComponent(label);
         layout.setMargin(true);
         layout.setSpacing(true);
